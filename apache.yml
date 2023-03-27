@@ -1,0 +1,28 @@
+---
+- name: Instalar y configurar servidor Apache
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Instalar Apache
+      apt:
+        name: apache2
+        state: present
+
+    - name: Configurar Apache
+      copy:
+        src: /home/lazycoder/apache.conf
+        dest: /etc/apache2/sites-available/000-default.conf
+      notify:
+        - Reiniciar Apache
+
+    - name: Copiar archivo HTML al servidor
+      copy:
+        src: /home/lazcoder/archivo.html
+        dest: /var/www/html/archivo.html
+
+  handlers:
+    - name: Reiniciar Apache
+      service:
+        name: apache2
+        state: restarted
